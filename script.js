@@ -2,50 +2,54 @@ var canvas = document.getElementById("canvas");
 var context = canvas.getContext("2d");
 
 // load images
-var spaceship = new Image();
-spaceship.src = "images/ship.png";
-var galaxy = new Image();
-galaxy.src = "images/galaxy.jpg";
-var foreground = new Image();
-foreground.src = "images/foreground.png";
-var laser = new Image();
-laser.src = "images/laser.png";
+var bat = new Image();
+bat.src = "images/bat.png";
+var bg = new Image();
+bg.src = "images/bg.jpg";
+var buffy = new Image();
+buffy.src = "images/buffy.png";
+var dracula = new Image();
+dracula.src = "images/dracula.png";
+var drusilla = new Image();
+drusilla.src = "images/drusilla.png";
+var fg = new Image();
+fg.src = "images/fg.png";
+var school = new Image();
+school.src = "images/school.png";
+
 
 
 // var audioName = new Audio();
 // audioName.src = "audio/audio.wav";
 
 
-var ship = {
+var safeZone = {
+x:0,
+y:50
+}
+
+var player = {
 x:20,
-y:100
+y:200
 }
 
-var beam1 = {
-  x:100,
-  y: 0,
-  width: 64,
-  height: 200
+var enemyDracula = {
+  x:400,
+  y: 150
 }
 
-var beam2 = {
-  x: 100,
-  y: 230,
-  width: 64,
-  height: 270
+var enemyDrusilla = {
+  x: 400,
+  y: 230
 }
 
-var gap = 30;
-var constant = beam1.height + gap;
+var enemyBat = {
+  x: 350,
+  y: 200
+}
+
 
 var lives = 3;
-
-var beam = [];
-
-beam[0] = {
-  x: canvas.width,
-  y: 0
-}
 
 
 //KeyClick Listeners
@@ -60,19 +64,26 @@ document.addEventListener("keyup", function(event){
 }, false);
 
 
+buffy.ready = false;
+bat.ready = false;
+bg.ready = false;
+dracula.ready = false;
+drusilla.ready = false;
+fg.ready = false;
+school.ready = false;
 
-spaceship.ready = false;
-galaxy.ready = false;
-laser.ready = false;
-foreground.ready = false;
-spaceship.onload = checkReady();
+
+buffy.onload = checkReady();
 
 //Check Ready & PlayGame
 function checkReady(){
    this.ready=true;
-   galaxy.ready = true;
-   laser.ready = true;
-   laser.ready = true;
+   bat.ready = true;
+   bg.ready = true;
+   dracula.ready = true;
+   drusilla.ready = true;
+   fg.ready = true;
+   school.ready = true;
    playGame();
  }
 
@@ -86,30 +97,20 @@ function render(){
 
 
 //NB Order matters here - draw galaxy first
-  context.drawImage(galaxy, 0, 0);
+  context.drawImage(bg, 0, -20);
+  context.drawImage(fg, 0, 5, 500, 300);
 
+  context.drawImage(dracula, enemyDracula.x, enemyDracula.y, 40, 40);
+  context.drawImage(drusilla, enemyDrusilla.x, enemyDrusilla.y, 40, 40);
+  context.drawImage(bat, enemyBat.x, enemyBat.y, 40, 40);
+  context.drawImage(school, safeZone.x, safeZone.y, 120, 100);
+  context.drawImage(buffy, player.x, player.y, 32, 50);
 
-//This creates lasers at edge of screen & keeps moving them to the left
-  for(var i = 0; i < beam.length; i++) {
-    context.drawImage(laser, beam[i].x, beam[i].y, beam1.width, beam1.height);
-    context.drawImage(laser, beam[i].x, beam[i].y+constant, beam2.width, beam2.height);
-    context.drawImage(spaceship, ship.x, ship.y, 50, 50);
-    beam[i].x--;
-
-    if(beam[i].x == 125){
-      beam.push({
-        x: canvas.width,
-        y: Math.floor(Math.random()* beam1.height)-beam1.height
-      });
-    }
-  }
-
-context.drawImage(foreground, 0, 220, 305, 250);
 
 
   context.font = "15px Verdana";
   context.fillStyle = "white";
-  context.fillText("Lives: " + lives, 5, 15);
+  context.fillText("Lives Saved: " + lives, 5, 15);
 
 }
 
@@ -117,16 +118,16 @@ context.drawImage(foreground, 0, 220, 305, 250);
 
 function move(keyClick){
    if(87 in keyClick){
-     ship.y-=10;
+     player.y-=10;
    }
    if(65 in keyClick){
-     ship.x-=10;
+     player.x-=10;
    }
    if(83 in keyClick){
-     ship.y+=10;
+     player.y+=10;
    }
    if(68 in keyClick){
-     ship.x+=10;
+     player.x+=10;
    }
 
    render();
