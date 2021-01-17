@@ -15,12 +15,35 @@ laser.src = "images/laser.png";
 
 
 var ship = {
-x:10,
-y:10
+x:20,
+y:100
 }
 
+var beam1 = {
+  x:100,
+  y: 0,
+  width: 64,
+  height: 220
+}
 
+var beam2 = {
+  x: 100,
+  y: 230,
+  width: 64,
+  height: 250
+}
 
+// var gap = 75;
+// var constant = beam1.height + gap;
+
+var lives = 3;
+
+var beam = [];
+
+beam[0] = {
+  x: canvas.width,
+  y: 0
+}
 
 
 //KeyClick Listeners
@@ -57,10 +80,32 @@ function checkReady(){
 
 function render(){
 
+
+//NB Order matters here - draw galaxy first
   context.drawImage(galaxy, 0, 0);
-  context.drawImage(laser, 100, 0, 64, 200);
-  context.drawImage(laser, 100, 275, 64, 200);
-  context.drawImage(spaceship, ship.x, ship.y, 50, 50);
+
+//This creates lasers at edge of screen & keeps moving them to the left
+  for(var i = 0; i < beam.length; i++) {
+    context.drawImage(laser, beam[i].x, beam[i].y, beam1.width, beam1.height);
+    context.drawImage(laser, beam[i].x, beam2.y, beam2.width, beam2.height);
+    context.drawImage(spaceship, ship.x, ship.y, 50, 50);
+    beam[i].x--;
+
+    if(beam[i].x == 125){
+      beam.push({
+        x: canvas.width,
+        y: Math.floor(Math.random()* beam1.height)-beam1.height
+      });
+    }
+  }
+
+//Currently only changing top beam. If using gap & constant for bottom beam y need to also calculate gap between bottom of beam2 & size of canvas & increase beam2 height (or decrease) by as much every turn
+
+
+  context.font = "15px Verdana";
+  context.fillStyle = "white";
+  context.fillText("Lives: " + lives, 5, 15);
+
 }
 
 
